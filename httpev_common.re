@@ -82,15 +82,15 @@ let show_client_addr = (~via=[Unix.inet_addr_loopback], req) => {
     };
   switch (req.addr) {
   | Unix.ADDR_UNIX(_) => header_or @@ Nix.show_addr(req.addr)
-  | [@implicit_arity] ADDR_INET(addr, _) when List.mem(addr, via) =>
+  |  ADDR_INET(addr, _) when List.mem(addr, via) =>
     header_or @@ Unix.string_of_inet_addr(addr)
-  | [@implicit_arity] ADDR_INET(addr, _) => Unix.string_of_inet_addr(addr)
+  |  ADDR_INET(addr, _) => Unix.string_of_inet_addr(addr)
   };
 };
 
 let client_addr = req =>
   switch (req.addr) {
-  | [@implicit_arity] Unix.ADDR_INET(addr, port) => (addr, port)
+  |  Unix.ADDR_INET(addr, port) => (addr, port)
   | _ => assert(false)
   };
 let client_ip = req => fst @@ client_addr(req);

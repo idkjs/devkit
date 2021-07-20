@@ -5600,12 +5600,12 @@ let parse = (~ctx=init(), call, data) => {
                 raise_notrace(Goto_again_htmlstream);
               };
             | "" => ()
-            | _ => call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^))
+            | _ => call @@  Tag((tag^, List.rev(attrs^)))
             };
             ();
           | 26 =>
             {
-              call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^));
+              call @@  Tag((tag^, List.rev(attrs^)));
               if (tag^ != "a") {
                 call(Close(tag^));
               };
@@ -5755,7 +5755,7 @@ let parse = (~ctx=init(), call, data) => {
                 raise_notrace(Goto_again_htmlstream);
               };
             | "" => ()
-            | _ => call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^))
+            | _ => call @@  Tag((tag^, List.rev(attrs^)))
             };
             mark := p^;
             ();
@@ -5774,7 +5774,7 @@ let parse = (~ctx=init(), call, data) => {
                 raise_notrace(Goto_again_htmlstream);
               };
             | "" => ()
-            | _ => call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^))
+            | _ => call @@  Tag((tag^, List.rev(attrs^)))
             };
 
             {
@@ -5786,7 +5786,7 @@ let parse = (~ctx=init(), call, data) => {
             ();
           | 27 =>
             {
-              call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^));
+              call @@  Tag((tag^, List.rev(attrs^)));
               if (tag^ != "a") {
                 call(Close(tag^));
               };
@@ -5814,7 +5814,7 @@ let parse = (~ctx=init(), call, data) => {
             mark := p^;
             ();
           | 36 =>
-            call @@ [@implicit_arity] Script(List.rev(attrs^), sub());
+            call @@  Script((List.rev(attrs^), sub()));
             {
               cs.contents = 0;
               if (true) {
@@ -5823,7 +5823,7 @@ let parse = (~ctx=init(), call, data) => {
             };
             ();
           | 37 =>
-            call @@ [@implicit_arity] Style(List.rev(attrs^), sub());
+            call @@  Style((List.rev(attrs^), sub()));
             {
               cs.contents = 0;
               if (true) {
@@ -5870,7 +5870,7 @@ let parse = (~ctx=init(), call, data) => {
                 raise_notrace(Goto_again_htmlstream);
               };
             | "" => ()
-            | _ => call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^))
+            | _ => call @@  Tag((tag^, List.rev(attrs^)))
             };
             mark := p^;
 
@@ -5878,7 +5878,7 @@ let parse = (~ctx=init(), call, data) => {
             ();
           | 28 =>
             {
-              call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^));
+              call @@  Tag((tag^, List.rev(attrs^)));
               if (tag^ != "a") {
                 call(Close(tag^));
               };
@@ -5934,12 +5934,12 @@ let parse = (~ctx=init(), call, data) => {
                 raise_notrace(Goto_again_htmlstream);
               };
             | "" => ()
-            | _ => call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^))
+            | _ => call @@  Tag((tag^, List.rev(attrs^)))
             };
             ();
           | 26 =>
             {
-              call @@ [@implicit_arity] Tag(tag^, List.rev(attrs^));
+              call @@  Tag((tag^, List.rev(attrs^)));
               if (tag^ != "a") {
                 call(Close(tag^));
               };

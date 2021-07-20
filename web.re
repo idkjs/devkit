@@ -53,7 +53,11 @@ let make_url_args =
   String.concat("&")
   $ List.map(
       fun
-      | /* (k, "") -> urlencode k | */ (k, v) =>
+      | (
+          /* (k, "") -> urlencode k | */
+          k,
+          v,
+        ) =>
         urlencode(k) ++ "=" ++ urlencode(v),
     );
 
@@ -642,7 +646,7 @@ module Curl_blocking = {
         Curl.CURLE_OK;
       }
     ) {
-    | [@implicit_arity] Curl.CurlException(code, _, _) => code
+    | Curl.CurlException((code, _, _)) => code
     };
 };
 

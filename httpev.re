@@ -64,7 +64,7 @@ let default_max_time = {
 };
 
 let default = {
-  connection: [@implicit_arity] ADDR_INET(Unix.inet_addr_loopback, 8080),
+  connection:  ADDR_INET(Unix.inet_addr_loopback, 8080),
   backlog: 100,
   log_epipe: false,
   debug: false,
@@ -227,7 +227,7 @@ let failed = (reason, s) => {
     };
 
   let s = Stre.shorten(1024, s);
-  raise([@implicit_arity] Parse(reason, sprintf("%s : %S", name, s)));
+  raise( Parse(reason, sprintf("%s : %S", name, s)));
 };
 
 let get_content_length = headers =>
@@ -443,7 +443,7 @@ let write_f = (c, (data, ack), ev, fd, _flags) => {
           loop(l, ack);
         };
       }) {
-      | [@implicit_arity] Unix.Unix_error(Unix.EAGAIN, _, _) => (l, ack)
+      |  Unix.Unix_error(Unix.EAGAIN, _, _) => (l, ack)
       }
     };
 
@@ -456,7 +456,7 @@ let write_f = (c, (data, ack), ev, fd, _flags) => {
     incr_errors(c.server);
     finish();
     switch (c.server.config.log_epipe, exn) {
-    | (false, [@implicit_arity] Unix.Unix_error(Unix.EPIPE, _, _)) => ()
+    | (false,  Unix.Unix_error(Unix.EPIPE, _, _)) => ()
     | _ => log#warn(~exn, "write_f %s", show_client(c))
     };
   };
@@ -518,7 +518,7 @@ let write_some = (fd, s) => {
         `Some(len);
       };
     }) {
-    | [@implicit_arity] Unix.Unix_error(Unix.EAGAIN, _, _) => `Some(0)
+    |  Unix.Unix_error(Unix.EAGAIN, _, _) => `Some(0)
     };
   };
 };
@@ -529,7 +529,7 @@ let abort = (c, exn, msg) => {
   incr_errors(c.server);
   finish(c);
   switch (c.server.config.log_epipe, exn) {
-  | (false, [@implicit_arity] Unix.Unix_error(Unix.EPIPE, _, _)) => ()
+  | (false,  Unix.Unix_error(Unix.EPIPE, _, _)) => ()
   | _ => log#warn(~exn, "abort %s %s", msg, show_client(c))
   };
 };
@@ -704,7 +704,7 @@ let send_reply_user = (c, req, (code, hdrs, body)) =>
 
 let make_error =
   fun
-  | [@implicit_arity] Parse(what, msg) => {
+  |  Parse(what, msg) => {
       let error =
         switch (what) {
         | Url
@@ -892,14 +892,14 @@ module Tcp = {
             };
           }
         ) {
-        | [@implicit_arity] Unix_error(EAGAIN, _, _) => ()
+        |  Unix_error(EAGAIN, _, _) => ()
         | exn =>
           /*
                  log #error ~exn "accept (total requests %d)" (Hashtbl.length status.reqs);
                  Hashtbl.iter (fun _ req -> log #error "%s" (show_request req)) status.reqs;
            */
           switch (exn) {
-          | [@implicit_arity] Unix_error(EMFILE, _, _) =>
+          |  Unix_error(EMFILE, _, _) =>
             let tm = 2.;
             log#error(
               "disable listening socket for %s ",
@@ -928,7 +928,7 @@ module Tcp = {
 
   let handle_lwt = (~single=false, fd, k) =>
     switch%lwt (Exn_lwt.map(Lwt_unix.accept, fd)) {
-    | `Exn([@implicit_arity] Unix.Unix_error(Unix.EMFILE, _, _)) =>
+    | `Exn( Unix.Unix_error(Unix.EMFILE, _, _)) =>
       let pause = 2.;
       log#error(
         "too many open files, disabling accept for %s",
@@ -1226,7 +1226,7 @@ let serve_text = (req, ~status=?, text) =>
 
 let run = (~ip=Unix.inet_addr_loopback, port, answer) =>
   server(
-    {...default, connection: [@implicit_arity] ADDR_INET(ip, port)},
+    {...default, connection:  ADDR_INET(ip, port)},
     answer,
   );
 

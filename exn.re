@@ -26,9 +26,9 @@ let map = (f, x) =>
 
 let to_string = exn =>
   switch (exn) {
-  | [@implicit_arity] Unix.Unix_error(e, f, s) =>
+  | Unix.Unix_error(e, f, s) =>
     sprintf("Unix_error %s(%s) %s", f, s, Unix.error_message(e))
-  | [@implicit_arity] Curl.CurlException(_, n, s) =>
+  | Curl.CurlException((_, n, s)) =>
     sprintf("Curl.CurlException(%u,%s)", n, s)
   | Pcre.Error(err) =>
     sprintf(
@@ -36,8 +36,7 @@ let to_string = exn =>
       switch (err) {
       | Partial => "Partial"
       | BadPartial => "BadPartial"
-      | [@implicit_arity] BadPattern(m, p) =>
-        sprintf("BadPattern(%s,%i)", m, p)
+      | BadPattern(m, p) => sprintf("BadPattern(%s,%i)", m, p)
       | BadUTF8 => "BadUTF8"
       | BadUTF8Offset => "BadUTF8Offset"
       | MatchLimit => "MatchLimit"

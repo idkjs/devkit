@@ -43,7 +43,7 @@ let read_some = (fd, buf, ofs, len) =>
     | n => Data(n)
     }
   ) {
-  | [@implicit_arity] Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) =>
+  |  Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) =>
     Block
   | exn =>
     log#warn(~exn, "read_some");
@@ -52,7 +52,7 @@ let read_some = (fd, buf, ofs, len) =>
 
 let write_some = (fd, buf, ofs, len) =>
   try(Unix.write_substring(fd, buf, ofs, len)) {
-  | [@implicit_arity] Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) => 0
+  |  Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) => 0
   };
 
 /** Read out all immediately available input (no blocking)
@@ -326,7 +326,7 @@ module Peer = {
 
   let connect = (p, ~timeout=?, k) =>
     try(Unix.connect(p.fd, p.addr)) {
-    | [@implicit_arity] Unix.Unix_error(Unix.EINPROGRESS, _, _) =>
+    |  Unix.Unix_error(Unix.EINPROGRESS, _, _) =>
       Ev.set(p.events, p.read, p.fd, [Ev.READ], ~persist=false, (fd, flags) =>
         try(
           switch (flags) {
@@ -338,7 +338,7 @@ module Peer = {
             | Some(err) =>
               error(
                 p,
-                ~exn=[@implicit_arity] Unix.Unix_error(err, "connect", ""),
+                ~exn= Unix.Unix_error(err, "connect", ""),
                 "connect",
               )
             | None => k()

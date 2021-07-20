@@ -11,13 +11,13 @@ let show_attrs_quote = (c, a) =>
 
 let show_raw_quote = (c, elem) =>
   switch (elem) {
-  | [@implicit_arity] Tag(name, attrs) =>
+  | Tag((name, attrs)) =>
     sprintf("<%s%s>", name, show_attrs_quote(c, attrs))
   | Text(t) => Raw.project(t)
   | Close(name) => Printf.sprintf("</%s>", name)
-  | [@implicit_arity] Script(attrs, s) =>
+  | Script((attrs, s)) =>
     sprintf("<script%s>%s</script>", show_attrs_quote(c, attrs), s)
-  | [@implicit_arity] Style(attrs, s) =>
+  | Style((attrs, s)) =>
     sprintf("<style%s>%s</style>", show_attrs_quote(c, attrs), s)
   };
 
@@ -47,8 +47,7 @@ let attrs_include = (attrs, a) => {
 
 let tag = (name, ~a=[]) =>
   fun
-  | [@implicit_arity] Tag(name', attrs) when name == name' =>
-    attrs_include(attrs, a)
+  | Tag((name', attrs)) when name == name' => attrs_include(attrs, a)
   | _ => false;
 
 let close = name =>
@@ -58,7 +57,7 @@ let close = name =>
 
 let to_text = (~br=false, ~strip=false) =>
   fun
-  | [@implicit_arity] Tag("br", _) when br => Some(Raw.inject("\n"))
+  | Tag(("br", _)) when br => Some(Raw.inject("\n"))
   | Tag(_) => None
   | Text(x) =>
     Some(

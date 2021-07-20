@@ -153,7 +153,7 @@ let rec input = (iz, buf, pos, len) => {
           Zlib.Z_SYNC_FLUSH,
         )
       ) {
-      | [@implicit_arity] Zlib.Error(_, _) =>
+      |  Zlib.Error(_, _) =>
         raise(Error("error during decompression"))
       };
     iz.in_pos = iz.in_pos + used_in;
@@ -273,7 +273,7 @@ let rec output = (oz, buf, pos, len) => {
         Zlib.Z_NO_FLUSH,
       )
     ) {
-    | [@implicit_arity] Zlib.Error(_, _) =>
+    |  Zlib.Error(_, _) =>
       raise(Error("error during compression"))
     };
   oz.out_pos = oz.out_pos + used_out;
