@@ -18,6 +18,8 @@ gen_metaocaml:
 
 build: lib
 
+fmt:
+		dune build fmt $(DUNEFLAGS)
 lib:
 		dune build $(DUNEFLAGS)
 

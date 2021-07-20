@@ -25,7 +25,7 @@ let reap = l =>
     List.partition(
       pid =>
         try(pid == fst(waitpid([WNOHANG], pid))) {
-        |  Unix_error(ECHILD, _, _) => true /* exited */
+        | Unix_error(ECHILD, _, _) => true /* exited */
         | exn =>
           log#warn(~exn, "Worker PID %d lost (wait)", pid);
           true;
@@ -42,7 +42,7 @@ let hard_kill1 = pid =>
         log#warn("Worker PID %d killed with SIGKILL", pid);
       }
     ) {
-    |  Unix_error(ESRCH, _, _) => ()
+    | Unix_error(ESRCH, _, _) => ()
     | exn => log#warn(~exn, "Worker PID %d (SIGKILL)", pid)
     }
   );
@@ -391,7 +391,7 @@ let run_forks_simple = (~revive=false, ~wait_stop=?, f, args) => {
     };
 
   args
-  |> List.iter(x =>{
+  |> List.iter(x => {
        let _: int = launch(f, x);
        ();
      });
@@ -520,7 +520,7 @@ module Services = {
 
   let wait = pid =>
     try%lwt(Lwt.map(fst, Lwt_unix.waitpid([], pid))) {
-    |  Unix.Unix_error(ECHILD, _, _) => Lwt.return(pid)
+    | Unix.Unix_error(ECHILD, _, _) => Lwt.return(pid)
     | exn =>
       log#warn(~exn, "Worker PID %d lost (wait)", pid);
       Lwt.return(pid);

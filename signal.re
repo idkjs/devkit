@@ -19,19 +19,20 @@ let init = events => {
   let fd = U.signalfd(~sigs=[], ~flags=[], ());
   Unix.set_nonblock(fd);
   let t = {ev: Ev.create(), fd, h: Hashtbl.create(1), active: true};
-  Ev.set(events, t.ev, t.fd, ~persist=true, [Ev.READ], (_, _) =>
+  Ev.set(events, t.ev, t.fd, ~persist=true, [Ev.READ], (_, _)
     /* references to t keep it alive with ev */
-    try({
-      let ssi = U.signalfd_read(t.fd);
-      let signo = U.ssi_signo_sys(ssi);
-      switch (Hashtbl.find_option(t.h, signo)) {
-      | None => Exn.fail("no handler for %d", signo)
-      | Some(f) => f(signo)
-      };
-    }) {
-    | exn => log#warn(~exn, "signal handler")
-    }
-  );
+    =>
+      try({
+        let ssi = U.signalfd_read(t.fd);
+        let signo = U.ssi_signo_sys(ssi);
+        switch (Hashtbl.find_option(t.h, signo)) {
+        | None => Exn.fail("no handler for %d", signo)
+        | Some(f) => f(signo)
+        };
+      }) {
+      | exn => log#warn(~exn, "signal handler")
+      }
+    );
   Ev.add(t.ev, None);
   t;
 };
@@ -80,7 +81,7 @@ let is_safe_output = () => verbose^;
 
 let set = (sigs, f) =>
   sigs
-  |> List.iter(signo =>{
+  |> List.iter(signo => {
        let f =
          switch (Hashtbl.find_option(h, signo)) {
          | None => f
@@ -94,7 +95,7 @@ let set = (sigs, f) =>
 
        Hashtbl.replace(h, signo, f);
        do_install^(signo, f);
-    } );
+     });
 
 let set1 = (signal, f) => set([signal], _ => f());
 

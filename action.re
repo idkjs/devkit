@@ -232,7 +232,7 @@ let file_lines_exn = file =>
   Control.with_open_in_txt(file, ch => Std.input_lines(ch) |> List.of_enum);
 
 let make_config_lines =
-  List.filter_map(s =>{
+  List.filter_map(s => {
     let (s, _comment) = Stre.dividec(s, '#');
     let s = String.strip(s);
     if (s != "") {
@@ -325,7 +325,7 @@ let chunk = (n, l) => {
 let chunk_e = (n, e) => {
   assert(n > 0);
   let fin = () => raise(Enum.No_more_elements);
-  Enum.from(() =>{
+  Enum.from(() => {
     let i = ref(n);
     if (Enum.is_empty(e)) {
       fin();

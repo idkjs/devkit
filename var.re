@@ -173,55 +173,56 @@ let iter = f =>
              );
            };
            l'
-           |> List.iter(((k, v)) =>{
+           |> List.iter(((k, v)) => {
                 let attr = [(g.k, k), ...Attr.get(g.attr)]; /* this was checked to be valid in [register] */
                 switch (v) {
                 | Some(v) => f(attr, v)
                 | _ => ()
                 };
-             } );
+              });
          | l =>
            /* list of getters for all instances created with this family name */
            let h = Hashtbl.create(10);
            l
-           |> List.iter(get =>
-                get()
-                |> List.iter(((k, vl))
-                     /* merge values of duplicated counters in family */
-                     =>
-                       switch (vl) {
-                       | Some(v) =>
-                         let r =
-                           switch (Hashtbl.find(h, k)) {
-                           | exception Not_found => Some(v)
-                           | Some(x) =>
-                             switch (x, v) {
-                             | (Time(a), Time(b)) => Some(Time(a +. b))
-                             | (Count(a), Count(b)) => Some(Count(a + b))
-                             | (Bytes(a), Bytes(b)) => Some(Bytes(a + b))
-                             | (Count(_), Bytes(_))
-                             | (Count(_), Time(_))
-                             | (Bytes(_), Count(_))
-                             | (Bytes(_), Time(_))
-                             | (Time(_), Count(_))
-                             | (Time(_), Bytes(_)) =>
-                               log#warn(
-                                 "mismatched value type for %S in %s",
-                                 k,
-                                 show_a @@ Attr.get(g.attr),
-                               );
-                               Some(v);
-                             }
-                           | None => None
-                           };
+           |> List.iter(get
+                =>
+                  get()
+                  |> List.iter(((k, vl))
+                       /* merge values of duplicated counters in family */
+                       =>
+                         switch (vl) {
+                         | Some(v) =>
+                           let r =
+                             switch (Hashtbl.find(h, k)) {
+                             | exception Not_found => Some(v)
+                             | Some(x) =>
+                               switch (x, v) {
+                               | (Time(a), Time(b)) => Some(Time(a +. b))
+                               | (Count(a), Count(b)) => Some(Count(a + b))
+                               | (Bytes(a), Bytes(b)) => Some(Bytes(a + b))
+                               | (Count(_), Bytes(_))
+                               | (Count(_), Time(_))
+                               | (Bytes(_), Count(_))
+                               | (Bytes(_), Time(_))
+                               | (Time(_), Count(_))
+                               | (Time(_), Bytes(_)) =>
+                                 log#warn(
+                                   "mismatched value type for %S in %s",
+                                   k,
+                                   show_a @@ Attr.get(g.attr),
+                                 );
+                                 Some(v);
+                               }
+                             | None => None
+                             };
 
-                         Hashtbl.replace(h, k, r);
-                       | None => Hashtbl.replace(h, k, None)
-                       }
-                     ) /* if at least one duplicate value is invalid - ignore all data for this counter */
-              );
+                           Hashtbl.replace(h, k, r);
+                         | None => Hashtbl.replace(h, k, None)
+                         }
+                       )
+                ) /* if at least one duplicate value is invalid - ignore all data for this counter */;
            h
-           |> Hashtbl.iter((k, v) =>{
+           |> Hashtbl.iter((k, v) => {
                 let attr = [(g.k, k), ...Attr.get(g.attr)]; /* this was checked to be valid in [register] */
                 switch (v) {
                 | Some(v) => f(attr, v)

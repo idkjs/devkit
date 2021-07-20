@@ -46,5 +46,4 @@ let self_name: unit => string;
 let self_as: string => t;
 let show_self: unit => string;
 
-
 let set_fake: t => unit;

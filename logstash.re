@@ -103,7 +103,7 @@ let common_fields = () => [
 let get = () => {
   open Var;
   let l = ref([]);
-  Var.iter((attr', v) =>{
+  Var.iter((attr', v) => {
     let (previous, attr) =
       try(Hashtbl.find(state, attr')) {
       | Not_found =>
@@ -149,7 +149,7 @@ let get = () => {
     };
   });
   dynamic
-  |> Hashtbl.iter((attr, v) =>{
+  |> Hashtbl.iter((attr, v) => {
        let attr = List.map(((k, s)) => (escape(k), s), attr);
        let this = (
          common_fields() @ attr: list((string, json)) :>

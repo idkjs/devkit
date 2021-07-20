@@ -90,7 +90,7 @@ let probe_pidfile = path =>
       kill(pid, 0);
       `Alive(pid);
     }) {
-    |  Unix_error(ESRCH, _, _) => `Stale
+    | Unix_error(ESRCH, _, _) => `Stale
     | e => `Error(e)
     };
   } else {
@@ -115,15 +115,18 @@ let manage_pidfile = path => {
   check_pidfile(path);
   write_pidfile(path);
   let pid = getpid();
-  at_exit(() =>
-    if (getpid() == pid) {Exn.suppress(Sys.remove, path);} /* else forked child */
-  );
+  at_exit(()
+    =>
+      if (getpid() == pid) {
+        Exn.suppress(Sys.remove, path);
+      }
+    ); /* else forked child */
 };
 
 let restart = (f, x) => {
   let rec loop = () =>
     try(f(x)) {
-    |  Unix.Unix_error(EINTR, _, _) => loop()
+    | Unix.Unix_error(EINTR, _, _) => loop()
     };
   loop();
 };
@@ -170,7 +173,7 @@ let handle_sig_reload_with = fin =>
             try(fin()) {
             | exn => log#warn(~exn, "handle_sig_reload")
             },
-            /*         log #info "Signal handler done." */
+          /*         log #info "Signal handler done." */
         ),
       ),
     [Sys.sighup],
@@ -179,12 +182,12 @@ let handle_sig_reload_with = fin =>
 let show_addr =
   fun
   | ADDR_UNIX(s) => sprintf("unix:%s", s)
-  |  ADDR_INET(addr, port) =>
+  | ADDR_INET(addr, port) =>
     sprintf("%s:%u", string_of_inet_addr(addr), port);
 
 let get_inet_addr_exn =
   fun
-  |  ADDR_INET(addr, _) => addr
+  | ADDR_INET(addr, _) => addr
   | addr => Exn.fail("get_inet_addr %s", show_addr(addr));
 
 let show_inet_addr_exn = addr =>
@@ -195,7 +198,7 @@ let make_inet_addr_exn = (host, port) => {
   if (Array.length(a) == 0) {
     Exn.fail("make_inet_addr %s %d", host, port);
   } else {
-     ADDR_INET(a[0], port);
+    ADDR_INET(a[0], port);
   };
 };
 
@@ -206,12 +209,12 @@ let inet_addr_of_string = s =>
         let (host, port) = String.split(s, ":");
         let port = int_of_string(port);
         switch (host) {
-        | "*" =>  ADDR_INET(inet_addr_any, port)
+        | "*" => ADDR_INET(inet_addr_any, port)
         | host => make_inet_addr_exn(host, port)
         };
       } else {
         let port = int_of_string(s);
-         ADDR_INET(inet_addr_loopback, port);
+        ADDR_INET(inet_addr_loopback, port);
       }
     ) {
     | _ =>
@@ -448,8 +451,7 @@ let output_buf_fd = (~bufsize=1 * 1024 * 1024, fd) => {
 let unlimit_soft = r => {
   let (soft, hard) = U.getrlimit(r);
   try(U.setrlimit(r, ~soft=hard, ~hard)) {
-  |  Unix_error((EPERM | EINVAL) as error, _, _)
-      when r == U.RLIMIT_NOFILE =>
+  | Unix_error((EPERM | EINVAL) as error, _, _) when r == U.RLIMIT_NOFILE =>
     log#warn(
       "failed to unlimit NOFILE %s -> %s : %s (check kernel limits fs.nr_open/kern.maxfilesperproc/etc), ignored",
       U.Rlimit.to_string(soft),
@@ -469,8 +471,7 @@ let raise_limits = () => {
 let connect = (fd, sockaddr) =>
   Unix.(
     try(connect(fd, sockaddr)) {
-    |  Unix_error(e, f, "") =>
-      raise( Unix_error(e, f, show_addr(sockaddr)))
+    | Unix_error(e, f, "") => raise(Unix_error(e, f, show_addr(sockaddr)))
     }
   );
 
@@ -479,8 +480,8 @@ let connect_lwt = (fd, sockaddr) =>
     Lwt.catch(
       () => connect(fd, sockaddr),
       fun
-      |  Unix_error(e, f, "") =>
-        Lwt.fail( Unix_error(e, f, show_addr(sockaddr)))
+      | Unix_error(e, f, "") =>
+        Lwt.fail(Unix_error(e, f, show_addr(sockaddr)))
       | exn => Lwt.fail(exn),
     )
   );

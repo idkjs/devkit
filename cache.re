@@ -192,7 +192,7 @@ module Count = {
       Array.sort(cmp, a);
       let distrib =
         limits
-        |> Array.map(limit =>{
+        |> Array.map(limit => {
              let (v, _) =
                Array.fold_left(
                  ((found, sum), (v, n)) => {
@@ -210,7 +210,7 @@ module Count = {
              | None => nan
              | Some(v) => v
              };
-          } );
+           });
 
       distrib;
     };

@@ -61,7 +61,7 @@ module Async_fin = {
 
     let reset = fd =>
       try(ignore(U.eventfd_read(fd))) {
-      |  Unix.Unix_error(Unix.EAGAIN, _, _) => ()
+      | Unix.Unix_error(Unix.EAGAIN, _, _) => ()
       | exn =>
         log#warn(~exn, "fin reset");
         ();

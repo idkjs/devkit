@@ -323,7 +323,6 @@ let parse_ipv4 = data => {
           };
 
           switch (_ipv4_trans_actions[state.trans]) {
-
           | 3 =>
             n := 10 * n^ + (Char.code(data.[p.contents]) - Char.code('0'));
             ();
@@ -365,7 +364,6 @@ let parse_ipv4 = data => {
       if (p.contents == eof.contents) {
         try(
           switch (_ipv4_eof_actions[cs.contents]) {
-
           | 6 =>
             set();
             ();
@@ -448,7 +446,6 @@ let is_ipv4_slow = data => {
               };
 
               switch (_ipv4_trans_actions[state.trans]) {
-
               | 3 =>
                 n :=
                   10 * n^ + (Char.code(data.[p.contents]) - Char.code('0'));
@@ -492,7 +489,6 @@ let is_ipv4_slow = data => {
           if (p.contents == eof.contents) {
             try(
               switch (_ipv4_eof_actions[cs.contents]) {
-
               | 6 =>
                 set();
                 ();
@@ -2264,7 +2260,6 @@ let parse_compact_duration = data => {
           };
 
           switch (_compact_duration_trans_actions[state.trans]) {
-
           | 1 =>
             n := 10 * n^ + (Char.code(data.[p.contents]) - Char.code('0'));
             ();
@@ -2360,7 +2355,6 @@ let parse_compact_duration = data => {
       if (p.contents == eof.contents) {
         try(
           switch (_compact_duration_eof_actions[cs.contents]) {
-
           | 6 =>
             {
               f := f^ +. float(fn^) /. 10. ** float(fna^);

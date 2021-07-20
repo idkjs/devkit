@@ -63,7 +63,7 @@ let () =
   });
 
 let () =
-  test("iequal", () =>{
+  test("iequal", () => {
     let t = {
       let n = ref(0);
       x => {
@@ -83,7 +83,7 @@ let () =
   });
 
 let () =
-  test("Nix.read_pidfile", () =>{
+  test("Nix.read_pidfile", () => {
     let f = ref("");
     let pid = 42;
     Control.with_open_out_temp_txt(((tmp, oc)) => {
@@ -94,7 +94,7 @@ let () =
   });
 
 let () =
-  test("Stre.iexists", () =>{
+  test("Stre.iexists", () => {
     let f = Stre.iexists;
     let t = {
       let n = ref(0);
@@ -127,7 +127,7 @@ let () =
   });
 
 let () =
-  test("Stre.splitc", () =>{
+  test("Stre.splitc", () => {
     let t = assert_equal(~printer=((a, b)) => sprintf("(%S,%S)", a, b));
     t(("a", "b"), Stre.splitc("a.b", '.'));
     t(("ab", ""), Stre.splitc("ab.", '.'));
@@ -138,10 +138,10 @@ let () =
     t(("", "ab"), Stre.rsplitc(".ab", '.'));
     t((".a", "b"), Stre.rsplitc(".a.b", '.'));
     t(("a.b", ""), Stre.rsplitc("a.b.", '.'));
- } );
+  });
 
 let () =
-  test("Stre.before", () =>{
+  test("Stre.before", () => {
     let t = assert_equal(~printer=id);
     t("", Stre.before("abc", ""));
     t("", Stre.before("abc", "a"));
@@ -192,7 +192,7 @@ let () =
   });
 
 let () =
-  test("Stre.by_words", () =>{
+  test("Stre.by_words", () => {
     let t = {
       let n = ref(0);
       x => {
@@ -213,7 +213,7 @@ let () =
   });
 
 let () =
-  test("Network.string_of_ipv4", () =>{
+  test("Network.string_of_ipv4", () => {
     let t = (n, s) => {
       assert_equal(
         ~printer=Int32.to_string,
@@ -234,10 +234,10 @@ let () =
     t(16777343l, "1.0.0.127");
     t(0xFFFFFFFFl, "255.255.255.255");
     t(257l, "0.0.1.1");
- } );
+  });
 
 let () =
-  test("Network.ipv4_matches", () =>{
+  test("Network.ipv4_matches", () => {
     let t = (ip, mask, ok) =>
       try(
         assert_equal(
@@ -271,7 +271,7 @@ let () =
   });
 
 let () =
-  test("Time.show_duration", () =>{
+  test("Time.show_duration", () => {
     let t = (n, s) => assert_equal(~printer=id, s, Time.show_duration(n));
     t(Time.days(365), "1 year 0 days 0 hours 0 mins 0 secs");
     t(Time.days(10), "10 days 0 hours 0 mins 0 secs");
@@ -279,7 +279,7 @@ let () =
   });
 
 let () =
-  test("Time.basic_string", () =>{
+  test("Time.basic_string", () => {
     let t = (n, s) =>
       assert_equal(~printer=id, s, Time.basic_gmt_string(n));
     t(

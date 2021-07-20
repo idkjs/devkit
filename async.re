@@ -43,8 +43,7 @@ let read_some = (fd, buf, ofs, len) =>
     | n => Data(n)
     }
   ) {
-  |  Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) =>
-    Block
+  | Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) => Block
   | exn =>
     log#warn(~exn, "read_some");
     Exn(exn);
@@ -52,7 +51,7 @@ let read_some = (fd, buf, ofs, len) =>
 
 let write_some = (fd, buf, ofs, len) =>
   try(Unix.write_substring(fd, buf, ofs, len)) {
-  |  Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) => 0
+  | Unix.Unix_error(Unix.EAGAIN | Unix.EWOULDBLOCK, _, _) => 0
   };
 
 /** Read out all immediately available input (no blocking)
@@ -326,7 +325,7 @@ module Peer = {
 
   let connect = (p, ~timeout=?, k) =>
     try(Unix.connect(p.fd, p.addr)) {
-    |  Unix.Unix_error(Unix.EINPROGRESS, _, _) =>
+    | Unix.Unix_error(Unix.EINPROGRESS, _, _) =>
       Ev.set(p.events, p.read, p.fd, [Ev.READ], ~persist=false, (fd, flags) =>
         try(
           switch (flags) {
@@ -336,11 +335,7 @@ module Peer = {
           | Ev.READ =>
             switch (Unix.getsockopt_error(fd)) {
             | Some(err) =>
-              error(
-                p,
-                ~exn= Unix.Unix_error(err, "connect", ""),
-                "connect",
-              )
+              error(p, ~exn=Unix.Unix_error(err, "connect", ""), "connect")
             | None => k()
             }
           }
